@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/TerminalScreen.unity
+    guid: f641881c4d674624bb01b20757feb3f4
   m_configObjects: {}
