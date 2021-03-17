@@ -21,6 +21,15 @@ public class TextInputManager : MonoBehaviour
     /**************************************************************************
      * * *                    VARIABLE DECLARATIONS                      * * */
 
+    //Audio players, sound fx clips, and music tracks
+    public AudioSource sfxPlayer;
+    public AudioSource musicPlayer;
+    public AudioClip keystrokeBlip;
+    public AudioClip buzzer;
+    public AudioClip chime;
+    public AudioClip missionTrack;
+    public AudioClip menuTrack;
+
     //Parameter display fields
     public Text keywordTextField;           //Display field for the keywords and phrases the player needs to type
     public Text wordStreakField;            //Display field for the current count of consecutively correctly typed words
@@ -87,6 +96,11 @@ public class TextInputManager : MonoBehaviour
         //Begin the mission timer
         missionRemainingTime = missionAlottedTime;
         missionActive = true;
+
+        //Play the mission music
+        musicPlayer.clip = missionTrack;
+        musicPlayer.loop = true;
+        musicPlayer.Play();
     }
 
     /**************************************************************************
@@ -142,12 +156,18 @@ public class TextInputManager : MonoBehaviour
             //Check to see if the entered character matches the next character of the current keyword
             if (obj == originalKeyword[charIndex])
             {
+                //Play keystroke sound
+                sfxPlayer.PlayOneShot(keystrokeBlip);
+
                 //Advance the character index to the next character of the current keyword
                 charIndex += 1;
 
                 //If that was the last character of the word, advance to the next keyword
                 if (charIndex == originalKeyword.Length)
                 {
+                    //Play success chime
+                    sfxPlayer.PlayOneShot(chime);
+
                     //Display the completed word on the terminal display
                     terminalText += missionKeywords[keywordIndex] + "\n> "; 
                     terminalField.text = terminalText;
@@ -171,6 +191,9 @@ public class TextInputManager : MonoBehaviour
             }
             else
             {
+                //Play buzzer sound
+                sfxPlayer.PlayOneShot(buzzer);
+
                 //Reset the streak of correctly typed words and go back to the beginning character of the current word
                 wordStreak = 0;
                 charIndex = 0;
@@ -196,6 +219,11 @@ public class TextInputManager : MonoBehaviour
         //Deactivate the mission
         missionActive = false;
 
+        //Switch to menu music
+        musicPlayer.Stop();
+        musicPlayer.clip = menuTrack;
+        musicPlayer.Play();
+
         //Display the mission failed message in the keyword display field
         keywordIndex = 0;
         keywordTextField.color = Color.red;
@@ -212,6 +240,11 @@ public class TextInputManager : MonoBehaviour
     {
         //Deactivate the mission
         missionActive = false;
+
+        //Switch to menu music
+        musicPlayer.Stop();
+        musicPlayer.clip = menuTrack;
+        musicPlayer.Play();
 
         //Display the mission success message in the keyword display field
         keywordIndex = 0;
