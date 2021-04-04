@@ -10,30 +10,35 @@ public class MenuController : MonoBehaviour
 {
     public Text messagePanel;
     public InputField playerNameField;
+    public GameStatus gameStatus;
     public PlayerData playerData;
+    public Text[] missionLabel;
+    public Text[] missionClearedStatus;
+
+    GameObject gso;
 
     string messageText = "";
 
-    //Using Awake since Awake is for initialization, and is called before start.
     private void Awake()
     {
-        PlayerData tempData = PlayerData.LoadPlayerData(playerData.playerName);
-
-        //If the load failed, then create a new instance of SaveData
-        if(tempData == null)
-        {
-            playerData = new PlayerData();
-        }
-        //If the load suceeded, then use the loaded file
-        else
-        {
-            playerData = tempData;
-        }
-
+        gso = GameObject.Find("GameStatus");
+    }
+    private void Start()
+    {
+        playerData = gso.GetComponent<GameStatus>().playerData;
         playerNameField.DeactivateInputField();
 
-        messageText = "> Enter your name by pressing the <color=#00FF00FF>F1</color> key. \n>";
+        if ((playerData.playerName == "") || (playerData.playerName == "Player-1"))
+        {
+            messageText = "> Enter your name by pressing the <color=#00FF00FF>F1</color> key. \n>";
+        }
+        else
+        {
+            messageText = "> Welcome back, Agent " + playerData.playerName + ".\n> ";
+        }
+
         messagePanel.text = messageText;
+        UpdateMissions();
     }
 
     /**************************************************************************
@@ -46,8 +51,36 @@ public class MenuController : MonoBehaviour
             playerNameField.Select();
         }
         if (Keyboard.current.f2Key.wasPressedThisFrame) StartNewGame();
-        if (Keyboard.current.f3Key.wasPressedThisFrame) playerData = PlayerData.LoadPlayerData(playerData.playerName);
-        if (Keyboard.current.f4Key.wasPressedThisFrame) playerData.SaveToDisk(playerData.playerName);
+
+        if (Keyboard.current.f3Key.wasPressedThisFrame)
+        {
+            if ((playerData.playerName == "") || (playerData.playerName == "Player-1"))
+            {
+                messageText += "\n> <color=#FF0000FF>DATA NOT LOADED!</color>";
+                messageText += "\n> To load your previous progress, press <color=#00FF00FF>F1</color> and provide your name.\n> ";
+            }
+            else
+            {
+                playerData = PlayerData.LoadPlayerData(playerData.playerName);
+                UpdateMissions();
+            }
+        }
+
+        if (Keyboard.current.f4Key.wasPressedThisFrame)
+        {
+            if ((playerData.playerName == "") || (playerData.playerName == "Player-1"))
+            {
+                messageText += "\n> <color=#FF0000FF>PROGRESS NOT SAVED!</color>";
+                messageText += "\n> To save your progress, press <color=#00FF00FF>F1</color> and provide your name.\n> ";
+            }
+            else
+            {
+                playerData.SaveToDisk(playerData.playerName);
+                messageText += "\n> Progress saved, Agent " + playerData.playerName + ".  Excellent work.\n>";
+            }
+            messagePanel.text = messageText;
+
+        }
         if (Keyboard.current.f5Key.wasPressedThisFrame) ToggleAchievements();
         if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleCredits();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) PrepareToQuit();
@@ -64,7 +97,12 @@ public class MenuController : MonoBehaviour
 
     void StartNewGame()
     {
-
+        for (int i = 0; i < 15; i++)
+        {
+            playerData.levelStatus[i] = 0;
+            if (i < 10) playerData.achievements[i] = false;
+        }
+        //load intro scene
     }
 
     void ToggleAchievements()
@@ -82,6 +120,46 @@ public class MenuController : MonoBehaviour
 
     }
 
+    void UpdateMissions()
+    {
+        for (int i = 0; i < missionClearedStatus.Length; i++)
+        {
+            if (playerData.levelStatus[i] == 0)
+            {
+                if (i > 0)
+                {
+                    if (playerData.levelStatus[i-1] > 0)
+                    {
+                        missionLabel[i].color = Color.green;
+                    }
+                    else
+                    {
+                        missionLabel[i].color = new Color(0.0f, 0.25f, 0.0f);
+                    }
+                }
+                missionClearedStatus[i].text = "";
+            }
+            else if (playerData.levelStatus[i] == 1)
+            {
+                missionLabel[i].color = Color.green;
+                missionClearedStatus[i].color = Color.green;
+                missionClearedStatus[i].text = "*";
+            }
+            else if (playerData.levelStatus[i] == 2)
+            {
+                missionLabel[i].color = Color.green;
+                missionClearedStatus[i].color = Color.white;
+                missionClearedStatus[i].text = "* *";
+            }
+            else
+            {
+                missionLabel[i].color = Color.yellow;
+                missionClearedStatus[i].color = Color.yellow;
+                missionClearedStatus[i].text = "* * *";
+            }
+        }
+
+    }
     private void OnDestroy()
     {
         //If the saveOnDestroy flag is set, data will automatically be saved.  This can be

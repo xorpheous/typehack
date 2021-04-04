@@ -16,7 +16,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class TextInputManager : MonoBehaviour
+public class MissionController : MonoBehaviour
 {
     /**************************************************************************
      * * *                    VARIABLE DECLARATIONS                      * * */
@@ -40,14 +40,14 @@ public class TextInputManager : MonoBehaviour
 
     public Image timeRemainingBar;          //Fill bar indicating the amount of time remaining to complete the mission.
 
-    //Mission Keywords and Phrases
-    public List<string> missionKeywords;    //List of keywords and phrases to be completed for the current mission
-
+    //Mission keyword display parameters and message text
     string originalKeyword;                 //Current unformatted keyword
     string displayedKeyword;                //Current keyword displayed with correct colour formatting
     string terminalText;                    //Text to be displayed on the central display terminal
 
     //Mission Status Parameters
+    GameStatus gso;                         //Game Status object that holds persistent data and current game state
+
     bool missionActive = false;             //Flag indicating whether the mission is active or not
 
     float missionAlottedTime = 60.0f;       //Time alotted to complete the current mission (seconds)
@@ -55,7 +55,6 @@ public class TextInputManager : MonoBehaviour
     float avgSpeed = 0.0f;                  //Average typing speed for the current mission (wpm, 5 characters = 1 word)
     float errorRate = 0.0f;                 //Percentage of erroneous key presses for the current mission
 
-    int missionLevel = 1;                   //Current mission level
     int wordStreak = 0;                     //Number of consecutively correctly typed words
     int numErrors = 0;                      //Total number of errors for the mission
     int numChars = 0;                       //Total number of characters typed for the mission including erroneous characters
@@ -69,12 +68,18 @@ public class TextInputManager : MonoBehaviour
      * * *                INITIALIZE MISSION PARAMETERS                  * * */
     void Start()
     {
+        //Find and assign the GameStatus game object for tracking and updating persistent data
+        gso = GameObject.Find("GameStatus").GetComponent<GameStatus>();
+
+        //Get keyword list and panagram for the current level
+        gso.GetMissionKeywords(gso.missionLevel);
+
         //Enable the keyboard input listener
         Keyboard.current.onTextInput += OnTextInput;
 
         //Load the first keyword and set the text colour to amber
         keywordIndex = 0;
-        originalKeyword = missionKeywords[keywordIndex];
+        originalKeyword = gso.keywords[keywordIndex];
         keywordTextField.color = new Color(1.0f, 0.7529412f, 0.0f);
 
         //Initialize the terminal text with player instructions
@@ -169,7 +174,7 @@ public class TextInputManager : MonoBehaviour
                     sfxPlayer.PlayOneShot(chime);
 
                     //Display the completed word on the terminal display
-                    terminalText += missionKeywords[keywordIndex] + "\n> "; 
+                    terminalText += gso.keywords[keywordIndex] + "\n> "; 
                     terminalField.text = terminalText;
 
                     //Reset the character index to point at the first character of the next word
@@ -183,10 +188,10 @@ public class TextInputManager : MonoBehaviour
                     keywordIndex += 1;
 
                     //If the player has completed the last keyword or phrase, end the mission as a success
-                    if (keywordIndex == missionKeywords.Count) MissionComplete();
+                    if (keywordIndex == gso.keywords.Count) MissionComplete();
                     
                     //Load the next keyword or phrase
-                    originalKeyword = missionKeywords[keywordIndex];
+                    originalKeyword = gso.keywords[keywordIndex];
                 }
             }
             else
