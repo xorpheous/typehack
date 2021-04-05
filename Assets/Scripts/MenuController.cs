@@ -17,6 +17,7 @@ public class MenuController : MonoBehaviour
     public Canvas creditsCanvas;
     public Canvas achievementsCanvas;
     public Canvas selectMissionCanvas;
+    public Canvas quitCanvas;
     public Image[] achievementMedals;
     public AudioSource sfxPlayer;
     public AudioClip keystroke;
@@ -31,9 +32,10 @@ public class MenuController : MonoBehaviour
     }
     private void Start()
     {
-        creditsCanvas.enabled = false;
         achievementsCanvas.enabled = false;
+        creditsCanvas.enabled = false;
         selectMissionCanvas.enabled = false;
+        quitCanvas.enabled = false;
 
         playerData = gso.GetComponent<GameStatus>().playerData;
         playerNameField.DeactivateInputField();
@@ -98,7 +100,7 @@ public class MenuController : MonoBehaviour
         if (Keyboard.current.f5Key.wasPressedThisFrame) MissionSelect();
         if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleAchievements();
         if (Keyboard.current.f7Key.wasPressedThisFrame) ToggleCredits();
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) PrepareToQuit();
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) ToggleQuit();
 
         if (selectMissionCanvas.enabled)
         {
@@ -117,6 +119,12 @@ public class MenuController : MonoBehaviour
             if (Keyboard.current.dKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 13;
             if (Keyboard.current.eKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 14;
             if (Keyboard.current.fKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 15;
+        }
+
+        if (quitCanvas.enabled)
+        {
+            if (Keyboard.current.yKey.wasPressedThisFrame) Application.Quit();
+            if (Keyboard.current.nKey.wasPressedThisFrame) ToggleQuit();
         }
     }
 
@@ -141,15 +149,17 @@ public class MenuController : MonoBehaviour
     public void MissionSelect()
     {
         selectMissionCanvas.enabled = !selectMissionCanvas.enabled;
-        creditsCanvas.enabled = false;
         achievementsCanvas.enabled = false;
+        creditsCanvas.enabled = false;
+        quitCanvas.enabled = false;
     }
 
     void ToggleAchievements()
     {
         achievementsCanvas.enabled = !achievementsCanvas.enabled;
-        selectMissionCanvas.enabled = false;
         creditsCanvas.enabled = false;
+        quitCanvas.enabled = false;
+        selectMissionCanvas.enabled = false;
     }
 
     void ToggleCredits()
@@ -157,11 +167,15 @@ public class MenuController : MonoBehaviour
         creditsCanvas.enabled = !creditsCanvas.enabled;
         achievementsCanvas.enabled = false;
         selectMissionCanvas.enabled = false;
+        quitCanvas.enabled = false;
     }
 
-    void PrepareToQuit()
+    void ToggleQuit()
     {
-
+        quitCanvas.enabled = !quitCanvas.enabled;
+        achievementsCanvas.enabled = false;
+        creditsCanvas.enabled = false;
+        selectMissionCanvas.enabled = false;
     }
 
     void UpdateMissions()
