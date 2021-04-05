@@ -14,6 +14,12 @@ public class MenuController : MonoBehaviour
     public PlayerData playerData;
     public Text[] missionLabel;
     public Text[] missionClearedStatus;
+    public Canvas creditsCanvas;
+    public Canvas achievementsCanvas;
+    public Canvas selectMissionCanvas;
+    public Image[] achievementMedals;
+    public AudioSource sfxPlayer;
+    public AudioClip keystroke;
 
     GameObject gso;
 
@@ -25,6 +31,10 @@ public class MenuController : MonoBehaviour
     }
     private void Start()
     {
+        creditsCanvas.enabled = false;
+        achievementsCanvas.enabled = false;
+        selectMissionCanvas.enabled = false;
+
         playerData = gso.GetComponent<GameStatus>().playerData;
         playerNameField.DeactivateInputField();
 
@@ -45,6 +55,8 @@ public class MenuController : MonoBehaviour
      * * * *             LISTEN FOR MENU SELECTION INPUTS              * * * */
     void Update()
     {
+        if (Keyboard.current.anyKey.wasPressedThisFrame) sfxPlayer.PlayOneShot(keystroke);
+
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
             playerNameField.ActivateInputField();
@@ -62,8 +74,10 @@ public class MenuController : MonoBehaviour
             else
             {
                 playerData = PlayerData.LoadPlayerData(playerData.playerName);
+                messageText += "\n> <color=#00FF00FF>DATA SUCCESSFULLY LOADED.</color>\n> ";
                 UpdateMissions();
             }
+            messagePanel.text = messageText;
         }
 
         if (Keyboard.current.f4Key.wasPressedThisFrame)
@@ -81,9 +95,29 @@ public class MenuController : MonoBehaviour
             messagePanel.text = messageText;
 
         }
-        if (Keyboard.current.f5Key.wasPressedThisFrame) ToggleAchievements();
-        if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleCredits();
+        if (Keyboard.current.f5Key.wasPressedThisFrame) MissionSelect();
+        if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleAchievements();
+        if (Keyboard.current.f7Key.wasPressedThisFrame) ToggleCredits();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) PrepareToQuit();
+
+        if (selectMissionCanvas.enabled)
+        {
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 1;
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 2;
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 3;
+            if (Keyboard.current.digit4Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 4;
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 5;
+            if (Keyboard.current.digit6Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 6;
+            if (Keyboard.current.digit7Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 7;
+            if (Keyboard.current.digit8Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 8;
+            if (Keyboard.current.digit9Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 9;
+            if (Keyboard.current.aKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 10;
+            if (Keyboard.current.bKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 11;
+            if (Keyboard.current.cKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 12;
+            if (Keyboard.current.dKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 13;
+            if (Keyboard.current.eKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 14;
+            if (Keyboard.current.fKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 15;
+        }
     }
 
     public void SetPlayerName()
@@ -104,15 +138,25 @@ public class MenuController : MonoBehaviour
         }
         //load intro scene
     }
+    public void MissionSelect()
+    {
+        selectMissionCanvas.enabled = !selectMissionCanvas.enabled;
+        creditsCanvas.enabled = false;
+        achievementsCanvas.enabled = false;
+    }
 
     void ToggleAchievements()
     {
-
+        achievementsCanvas.enabled = !achievementsCanvas.enabled;
+        selectMissionCanvas.enabled = false;
+        creditsCanvas.enabled = false;
     }
 
     void ToggleCredits()
     {
-
+        creditsCanvas.enabled = !creditsCanvas.enabled;
+        achievementsCanvas.enabled = false;
+        selectMissionCanvas.enabled = false;
     }
 
     void PrepareToQuit()
@@ -158,7 +202,10 @@ public class MenuController : MonoBehaviour
                 missionClearedStatus[i].text = "* * *";
             }
         }
-
+       for (int i=0; i< playerData.achievements.Length; i++)
+        {
+            achievementMedals[i].enabled = playerData.achievements[i];
+        }
     }
     private void OnDestroy()
     {
