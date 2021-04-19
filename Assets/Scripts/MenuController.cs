@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 //This class is not needed to use the SaveData class.  It is simply to show a very basic example
 //of how to use SaveData.
