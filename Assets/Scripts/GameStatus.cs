@@ -12,6 +12,8 @@ public class GameStatus : MonoBehaviour
     public string currentKeyword;
     public string currentPanagram;
     public List<string> keywords = new List<string>();
+    public List<string> missionObjectives = new List<string>();
+    public List<string> missionBriefing = new List<string>();
 
     private void Awake()
     {
@@ -31,6 +33,7 @@ public class GameStatus : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Define Keywords
         keywordFilePath = Application.dataPath + "TextFiles/";
         keywordFilenames[0] = "mission1.txt";
         keywordFilenames[1] = "mission2.txt";

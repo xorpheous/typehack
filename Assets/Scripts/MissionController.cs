@@ -63,7 +63,6 @@ public class MissionController : MonoBehaviour
     public int charIndex = 0;               //Current character index to be typed by the player (leftmost character = 0)
     public int keywordIndex = 0;            //List index for the current keyword to be typed by the player
 
-
     /**************************************************************************
      * * *                INITIALIZE MISSION PARAMETERS                  * * */
     void Start()
@@ -240,7 +239,7 @@ public class MissionController : MonoBehaviour
     }
 
     /**************************************************************************
-     * * *               HANDLE MISSION FAILURE CONDITION                * * */
+     * * *               HANDLE MISSION COMPLETE CONDITION               * * */
     private void MissionComplete()
     {
         //Deactivate the mission
@@ -259,7 +258,39 @@ public class MissionController : MonoBehaviour
         //Display the mission success message in the terminal display and invite the player to try again
         terminalText += "\n> MISSION SUCCESS.\n> Press [F1] to try again.\n> ";
         terminalField.text = terminalText;
-        //save game data
+
+        //Determine mission star rating.
+        if ((missionRemainingTime > 0.5f * missionAlottedTime) && (numErrors == 0))
+        {
+            gso.playerData.levelStatus[gso.missionLevel - 1] = 3;
+        }
+        else if (missionRemainingTime > 0.25f * missionAlottedTime)
+        {
+            gso.playerData.levelStatus[gso.missionLevel - 1] = 2;
+        }
+        else
+        {
+            gso.playerData.levelStatus[gso.missionLevel - 1] = 1;
+        }
+
+        //Determine if any new achievements were earned
+        if (!gso.playerData.achievements[0]) gso.playerData.achievements[0] = true;
+        if ((!gso.playerData.achievements[1]) && (gso.playerData.levelStatus[gso.missionLevel - 1] > 1)) gso.playerData.achievements[1] = true;
+        if ((!gso.playerData.achievements[2]) && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2)) gso.playerData.achievements[2] = true;
+        if ((!gso.playerData.achievements[3]) && (gso.missionLevel > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 2] > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 3] > 2)) gso.playerData.achievements[3] = true;
+        if ((!gso.playerData.achievements[4]) && (gso.missionLevel > 4)
+            && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 2] > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 3] > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 4] > 2)
+            && (gso.playerData.levelStatus[gso.missionLevel - 5] > 2)) gso.playerData.achievements[4] = true;
+
+        //Save the player's progress
+        gso.playerData.SaveToDisk(gso.playerData.playerName);
+
         //load next mission briefing
     }
 }
