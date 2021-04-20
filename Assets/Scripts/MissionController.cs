@@ -40,6 +40,8 @@ public class MissionController : MonoBehaviour
 
     public Image timeRemainingBar;          //Fill bar indicating the amount of time remaining to complete the mission.
 
+    public Canvas missingBriefing;          //Canvas displaying the mission briefing imformation
+
     //Mission keyword display parameters and message text
     string originalKeyword;                 //Current unformatted keyword
     string displayedKeyword;                //Current keyword displayed with correct colour formatting
@@ -55,6 +57,7 @@ public class MissionController : MonoBehaviour
     float avgSpeed = 0.0f;                  //Average typing speed for the current mission (wpm, 5 characters = 1 word)
     float errorRate = 0.0f;                 //Percentage of erroneous key presses for the current mission
 
+    int keywordsCompleted;                   //Number of keywords completed
     int wordStreak = 0;                     //Number of consecutively correctly typed words
     int numErrors = 0;                      //Total number of errors for the mission
     int numChars = 0;                       //Total number of characters typed for the mission including erroneous characters
@@ -77,13 +80,17 @@ public class MissionController : MonoBehaviour
         Keyboard.current.onTextInput += OnTextInput;
 
         //Load the first keyword and set the text colour to amber
-        keywordIndex = 0;
+        keywordIndex = Random.Range(0,gso.keywords.Count);
         originalKeyword = gso.keywords[keywordIndex];
+        gso.keywords.RemoveAt(keywordIndex);
         keywordTextField.color = new Color(1.0f, 0.7529412f, 0.0f);
 
         //Initialize the terminal text with player instructions
         terminalText = "> Enter the KEYWORDS shown below as they appear to counteract the cyberthreat.\n>\n> ";
         terminalField.text = terminalText;
+
+        //Intiialize the number of keywords completed
+        keywordsCompleted = 0;
 
         //Initialize the error count
         numErrors = 0;
@@ -183,14 +190,16 @@ public class MissionController : MonoBehaviour
                     wordStreak += 1;
                     wordStreakField.text = wordStreak.ToString();
 
-                    //Advance the keyword index to point to the next word or phrase.
-                    keywordIndex += 1;
+                    //Advance the keywords completed.
+                    keywordsCompleted += 1;
 
                     //If the player has completed the last keyword or phrase, end the mission as a success
-                    if (keywordIndex == gso.keywords.Count) MissionComplete();
-                    
+                    if (keywordsCompleted == 10) MissionComplete();
+
                     //Load the next keyword or phrase
+                    keywordIndex = Random.Range(0, gso.keywords.Count);
                     originalKeyword = gso.keywords[keywordIndex];
+                    gso.keywords.RemoveAt(keywordIndex);
                 }
             }
             else

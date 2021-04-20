@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameStatus : MonoBehaviour
 {
@@ -12,8 +13,9 @@ public class GameStatus : MonoBehaviour
     public string currentKeyword;
     public string currentPanagram;
     public List<string> keywords = new List<string>();
-    public List<string> missionObjectives = new List<string>();
-    public List<string> missionBriefing = new List<string>();
+    public string[] missionObjectives = new string[15];
+    public string[] missionBriefing = new string[15];
+    public string[] missionPanagrams = new string[15];
 
     private void Awake()
     {
@@ -50,12 +52,29 @@ public class GameStatus : MonoBehaviour
         keywordFilenames[12] = "mission13.txt";
         keywordFilenames[13] = "mission14.txt";
         keywordFilenames[14] = "mission15.txt";
+
+        //Define Mission Objectives
+        missionObjectives[0] = "Mission 1 Objectives:\nDo stuff.";
+        missionObjectives[1] = "Mission 2 Objectives:\nDo stuff.";
+        missionObjectives[2] = "Mission 3 Objectives:\nDo stuff.";
+        missionObjectives[3] = "Mission 4 Objectives:\nDo stuff.";
+        missionObjectives[4] = "Mission 5 Objectives:\nDo stuff.";
+        missionObjectives[5] = "Mission 6 Objectives:\nDo stuff.";
+        missionObjectives[6] = "Mission 7 Objectives:\nDo stuff.";
+        missionObjectives[7] = "Mission 8 Objectives:\nDo stuff.";
+        missionObjectives[8] = "Mission 9 Objectives:\nDo stuff.";
+        missionObjectives[9] = "Mission 10 Objectives:\nDo stuff.";
+        missionObjectives[10] = "Mission 11 Objectives:\nDo stuff.";
+        missionObjectives[11] = "Mission 12 Objectives:\nDo stuff.";
+        missionObjectives[12] = "Mission 13 Objectives:\nDo stuff.";
+        missionObjectives[13] = "Mission 14 Objectives:\nDo stuff.";
+        missionObjectives[14] = "Mission 15 Objectives:\nDo stuff.";
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartMission (int level)
     {
-        
+        GetMissionKeywords(level);
+        SceneManager.LoadScene("TerminalScreen");
     }
 
     public void GetMissionKeywords(int level)
@@ -69,5 +88,6 @@ public class GameStatus : MonoBehaviour
         {
             keywords.Add(missionFile.ReadLine());
         }
+        currentPanagram = missionPanagrams[level];
     }
 }
