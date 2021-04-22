@@ -6722,9 +6722,65 @@ MonoBehaviour:
   missionLevel: 0
   currentKeyword: 
   currentPanagram: 
-  keywords: []
-  missionObjectives: []
-  missionBriefing: []
+  keywords:
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  missionObjectives:
+  - Mission 1 Objectives:\nDo stuff.
+  - Mission 2 Objectives:\nDo stuff.
+  - Mission 3 Objectives:\nDo stuff.
+  - Mission 4 Objectives:\nDo stuff.
+  - Mission 5 Objectives:\nDo stuff.
+  - Mission 6 Objectives:\nDo stuff.
+  - Mission 7 Objectives:\nDo stuff.
+  - Mission 8 Objectives:\nDo stuff.
+  - Mission 9 Objectives:\nDo stuff.
+  - Mission 10 Objectives:\nDo stuff.
+  - Mission 11 Objectives:\nDo stuff.
+  - Mission 12 Objectives:\nDo stuff.
+  - Mission 13 Objectives:\nDo stuff.
+  - Mission 14 Objectives:\nDo stuff.
+  - Mission 15 Objectives:\nDo stuff.
+  missionBriefing:
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  - Your mission if you choose to accept it.
+  missionPanagrams:
+  - Glad lads flash jag flasks
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
+  - The quick brown fox jumped over the lazy dog.
 --- !u!114 &1649923783
 MonoBehaviour:
   m_ObjectHideFlags: 0

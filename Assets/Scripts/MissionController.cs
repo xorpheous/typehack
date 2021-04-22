@@ -37,10 +37,12 @@ public class MissionController : MonoBehaviour
     public Text errorRateField;             //Display field for the percentage of incorrect keystrokes
     public Text avgSpeedField;              //Display field for the average typing speed during the current mission
     public Text terminalField;              //Display field for the center display terminal
+    public Text terminalMissionObj;         //Display field for the mission objectives during active mission
+    public Text briefingMissionObj;         //Display field for the mission objectives during the mission briefing
 
     public Image timeRemainingBar;          //Fill bar indicating the amount of time remaining to complete the mission.
 
-    public Canvas missingBriefing;          //Canvas displaying the mission briefing imformation
+    public Canvas missionBriefing;          //Canvas displaying the mission briefing imformation
 
     //Mission keyword display parameters and message text
     string originalKeyword;                 //Current unformatted keyword
@@ -50,6 +52,7 @@ public class MissionController : MonoBehaviour
     //Mission Status Parameters
     GameStatus gso;                         //Game Status object that holds persistent data and current game state
 
+    bool briefingActive = true;             //Flag indicating whether the briefing is active or not
     bool missionActive = false;             //Flag indicating whether the mission is active or not
 
     float missionAlottedTime = 60.0f;       //Time alotted to complete the current mission (seconds)
@@ -80,9 +83,10 @@ public class MissionController : MonoBehaviour
         Keyboard.current.onTextInput += OnTextInput;
 
         //Load the first keyword and set the text colour to amber
-        keywordIndex = Random.Range(0,gso.keywords.Count);
+        keywordIndex = 0;
+        //keywordIndex = Random.Range(0,gso.keywords.Count);
         originalKeyword = gso.keywords[keywordIndex];
-        gso.keywords.RemoveAt(keywordIndex);
+        //gso.keywords.RemoveAt(keywordIndex);
         keywordTextField.color = new Color(1.0f, 0.7529412f, 0.0f);
 
         //Initialize the terminal text with player instructions
@@ -104,22 +108,31 @@ public class MissionController : MonoBehaviour
         errorRate = 0.0f;
         errorRateField.text = errorRate.ToString("00.0");
 
-        //Begin the mission timer
+        //Prepare the mission timer
         missionRemainingTime = missionAlottedTime;
-        missionActive = true;
 
         //Play the mission music
         musicPlayer.clip = missionTrack;
         musicPlayer.loop = true;
         musicPlayer.Play();
+
+        //Load mission objectives and briefing text into the appropriate text fields
+        terminalMissionObj.text = gso.missionObjectives[gso.missionLevel - 1];
+        briefingMissionObj.text = gso.missionObjectives[gso.missionLevel - 1];
+
+        //Begin with the mission briefing
+        BeginBriefing();
     }
 
     /**************************************************************************
      * * *              UPDATE MISSION STATUS EVERY FRAME                * * */
     void Update()
     {
+        //Always allow ESC to return the player to the main menu.
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) SceneManager.LoadScene("MainMenu");
+
         //Update the mission status only while the mission is active
-        if (missionActive)
+        if ((missionActive) && (!briefingActive))
         {
             //Increment the mission elapsed time and update the time remaining bar
             missionRemainingTime -= Time.deltaTime;
@@ -143,7 +156,7 @@ public class MissionController : MonoBehaviour
             avgSpeed = 12.0f * (float)(numChars - numErrors) / (missionRemainingTime);
             avgSpeedField.text = avgSpeed.ToString("000");
         }
-        else
+        else if (!briefingActive)
         {
             //If the mission is over, listen for the F1 key to restart
             if (Keyboard.current.f1Key.wasPressedThisFrame)
@@ -152,6 +165,31 @@ public class MissionController : MonoBehaviour
                 SceneManager.LoadScene("TerminalScreen");
             }
         }
+        else
+        {
+            //If the mission is just starting, listen for the F1 key to end the briefing and start the mission
+            if (Keyboard.current.f1Key.wasPressedThisFrame)
+            {
+                Debug.Log("F1 key was pressed during briefing");
+                EndBriefing();
+            }
+        }
+    }
+
+    private void BeginBriefing()
+    {
+        briefingActive = true;
+        missionActive = false;
+        missionBriefing.enabled = true;
+        //do whatever else needs to happen in the future here (music and whatnot)
+    }
+
+    private void EndBriefing()
+    {
+        briefingActive = false;
+        missionBriefing.enabled = false;
+        missionActive = true;
+        //do whatever else needs to happen in the future here (music and whatnot)
     }
 
     /**************************************************************************
@@ -193,13 +231,18 @@ public class MissionController : MonoBehaviour
                     //Advance the keywords completed.
                     keywordsCompleted += 1;
 
+                    //Increment the keyword index
+                    keywordIndex++;
+                    //keywordIndex = Random.Range(0, gso.keywords.Count);
+                    //originalKeyword = gso.keywords[keywordIndex];
+                    //gso.keywords.RemoveAt(keywordIndex);
+
                     //If the player has completed the last keyword or phrase, end the mission as a success
-                    if (keywordsCompleted == 10) MissionComplete();
+                    if (keywordIndex == gso.keywords.Count) MissionComplete();
+                    //if (keywordsCompleted == 10) MissionComplete();
 
                     //Load the next keyword or phrase
-                    keywordIndex = Random.Range(0, gso.keywords.Count);
                     originalKeyword = gso.keywords[keywordIndex];
-                    gso.keywords.RemoveAt(keywordIndex);
                 }
             }
             else
@@ -251,6 +294,8 @@ public class MissionController : MonoBehaviour
      * * *               HANDLE MISSION COMPLETE CONDITION               * * */
     private void MissionComplete()
     {
+        string starRating = "";
+
         //Deactivate the mission
         missionActive = false;
 
@@ -259,27 +304,21 @@ public class MissionController : MonoBehaviour
         musicPlayer.clip = menuTrack;
         musicPlayer.Play();
 
-        //Display the mission success message in the keyword display field
-        keywordIndex = 0;
-        keywordTextField.color = Color.green;
-        keywordTextField.text = "MISSION SUCCESS";
-
-        //Display the mission success message in the terminal display and invite the player to try again
-        terminalText += "\n> MISSION SUCCESS.\n> Press [F1] to try again.\n> ";
-        terminalField.text = terminalText;
-
         //Determine mission star rating.
         if ((missionRemainingTime > 0.5f * missionAlottedTime) && (numErrors == 0))
         {
             gso.playerData.levelStatus[gso.missionLevel - 1] = 3;
+            starRating = "* * *";
         }
         else if (missionRemainingTime > 0.25f * missionAlottedTime)
         {
             gso.playerData.levelStatus[gso.missionLevel - 1] = 2;
+            starRating = "* *";
         }
         else
         {
             gso.playerData.levelStatus[gso.missionLevel - 1] = 1;
+            starRating = "*";
         }
 
         //Determine if any new achievements were earned
@@ -297,9 +336,18 @@ public class MissionController : MonoBehaviour
             && (gso.playerData.levelStatus[gso.missionLevel - 4] > 2)
             && (gso.playerData.levelStatus[gso.missionLevel - 5] > 2)) gso.playerData.achievements[4] = true;
 
+        //Display the mission success message in the keyword display field
+        keywordIndex = 0;
+        keywordTextField.color = Color.green;
+        keywordTextField.text = "MISSION SUCCESS";
+
+        //Display the mission success message in the terminal display and invite the player to try again
+        terminalText += "\n> MISSION SUCCESS!";
+        terminalText += "\n> Rating: " + starRating + "\n> ";
+        terminalText += "\n> Press [F1] to try again.\n> Press [ESC] to return to the main menu.\n>";
+        terminalField.text = terminalText;
+
         //Save the player's progress
         gso.playerData.SaveToDisk(gso.playerData.playerName);
-
-        //load next mission briefing
     }
 }

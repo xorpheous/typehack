@@ -105,24 +105,84 @@ public class MenuController : MonoBehaviour
 
         if (selectMissionCanvas.enabled)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 1;
-            if (Keyboard.current.digit2Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 2;
-            if (Keyboard.current.digit3Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 3;
-            if (Keyboard.current.digit4Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 4;
-            if (Keyboard.current.digit5Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 5;
-            if (Keyboard.current.digit6Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 6;
-            if (Keyboard.current.digit7Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 7;
-            if (Keyboard.current.digit8Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 8;
-            if (Keyboard.current.digit9Key.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 9;
-            if (Keyboard.current.aKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 10;
-            if (Keyboard.current.bKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 11;
-            if (Keyboard.current.cKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 12;
-            if (Keyboard.current.dKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 13;
-            if (Keyboard.current.eKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 14;
-            if (Keyboard.current.fKey.wasPressedThisFrame) gso.GetComponent<GameStatus>().missionLevel = 15;
+            if (Keyboard.current.digit1Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 1;
+                gso.GetComponent<GameStatus>().StartMission(1);
+            }
+            if (Keyboard.current.digit2Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 2;
+                gso.GetComponent<GameStatus>().StartMission(2);
+            }
+            if (Keyboard.current.digit3Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 3;
+                gso.GetComponent<GameStatus>().StartMission(3);
+            }
+            if (Keyboard.current.digit4Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 4;
+                gso.GetComponent<GameStatus>().StartMission(4);
+            }
+            if (Keyboard.current.digit5Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 5;
+                gso.GetComponent<GameStatus>().StartMission(5);
+            }
+            if (Keyboard.current.digit6Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 6;
+                gso.GetComponent<GameStatus>().StartMission(6);
+            }
+            if (Keyboard.current.digit7Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 7;
+                gso.GetComponent<GameStatus>().StartMission(7);
+            }
+            if (Keyboard.current.digit8Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 8;
+                gso.GetComponent<GameStatus>().StartMission(8);
+            }
+            if (Keyboard.current.digit9Key.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 9;
+                gso.GetComponent<GameStatus>().StartMission(9);
+            }
+            if (Keyboard.current.aKey.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 10;
+                gso.GetComponent<GameStatus>().StartMission(10);
+            }
+            if (Keyboard.current.bKey.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 11;
+                gso.GetComponent<GameStatus>().StartMission(11);
+            }
+            if (Keyboard.current.cKey.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 12;
+                gso.GetComponent<GameStatus>().StartMission(12);
+            }
+            if (Keyboard.current.dKey.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 13;
+                gso.GetComponent<GameStatus>().StartMission(13);
+            }
+            if (Keyboard.current.eKey.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 14;
+                gso.GetComponent<GameStatus>().StartMission(14);
+            }
+            if (Keyboard.current.fKey.wasPressedThisFrame)
+            {
+                gso.GetComponent<GameStatus>().missionLevel = 15;
+                gso.GetComponent<GameStatus>().StartMission(15);
+            }
         }
 
-        if (quitCanvas.enabled)
+            if (quitCanvas.enabled)
         {
             if (Keyboard.current.yKey.wasPressedThisFrame) Application.Quit();
             if (Keyboard.current.nKey.wasPressedThisFrame) ToggleQuit();
@@ -145,7 +205,7 @@ public class MenuController : MonoBehaviour
             playerData.levelStatus[i] = 0;
             if (i < 10) playerData.achievements[i] = false;
         }
-        //load intro scene
+        UpdateMissions();
     }
     public void MissionSelect()
     {
