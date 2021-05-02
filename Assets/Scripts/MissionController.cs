@@ -39,6 +39,7 @@ public class MissionController : MonoBehaviour
     public Text terminalField;              //Display field for the center display terminal
     public Text terminalMissionObj;         //Display field for the mission objectives during active mission
     public Text briefingMissionObj;         //Display field for the mission objectives during the mission briefing
+    public Text briefingDialogField;        //Display field for the mission briefing dialog
 
     public Image timeRemainingBar;          //Fill bar indicating the amount of time remaining to complete the mission.
 
@@ -76,7 +77,7 @@ public class MissionController : MonoBehaviour
         //Find and assign the GameStatus game object for tracking and updating persistent data
         gso = GameObject.Find("GameStatus").GetComponent<GameStatus>();
 
-        //Get keyword list and panagram for the current level
+        //Get keyword list and pangram for the current level
         gso.GetMissionKeywords(gso.missionLevel);
 
         //Enable the keyboard input listener
@@ -119,6 +120,7 @@ public class MissionController : MonoBehaviour
         //Load mission objectives and briefing text into the appropriate text fields
         terminalMissionObj.text = gso.missionObjectives[gso.missionLevel - 1];
         briefingMissionObj.text = gso.missionObjectives[gso.missionLevel - 1];
+        briefingDialogField.text = gso.missionBriefing[gso.missionLevel - 1];
 
         //Begin with the mission briefing
         BeginBriefing();
@@ -295,6 +297,7 @@ public class MissionController : MonoBehaviour
     private void MissionComplete()
     {
         string starRating = "";
+        string achievementNotices = "";
 
         //Deactivate the mission
         missionActive = false;
@@ -308,33 +311,99 @@ public class MissionController : MonoBehaviour
         if ((missionRemainingTime > 0.5f * missionAlottedTime) && (numErrors == 0))
         {
             gso.playerData.levelStatus[gso.missionLevel - 1] = 3;
-            starRating = "* * *";
+            starRating = "<color=#FFFF00FF>* * *</color>  GREAT JOB!";
         }
         else if (missionRemainingTime > 0.25f * missionAlottedTime)
         {
             gso.playerData.levelStatus[gso.missionLevel - 1] = 2;
-            starRating = "* *";
+            starRating = "<color=#FFFFFFFF>* *</color>  Nicely done!";
         }
         else
         {
             gso.playerData.levelStatus[gso.missionLevel - 1] = 1;
-            starRating = "*";
+            starRating = "* You're getting there, rookie!";
         }
 
-        //Determine if any new achievements were earned
-        if (!gso.playerData.achievements[0]) gso.playerData.achievements[0] = true;
-        if ((!gso.playerData.achievements[1]) && (gso.playerData.levelStatus[gso.missionLevel - 1] > 1)) gso.playerData.achievements[1] = true;
-        if ((!gso.playerData.achievements[2]) && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2)) gso.playerData.achievements[2] = true;
+        /*** Determine if any new achievements were earned ***/
+        //Count number of three-star ratings
+        int threeStarMissions = 0;
+        for (int i = 0; i < 15; i++)
+        {
+            if (gso.playerData.levelStatus[i] > 2) threeStarMissions += 1;
+        }
+
+        //Completed first level
+        if (!gso.playerData.achievements[0])
+        {
+            gso.playerData.achievements[0] = true;
+            achievementNotices += "\n> First assignent complete!";
+        }
+
+        //First two-star level
+        if ((!gso.playerData.achievements[1]) && (gso.playerData.levelStatus[gso.missionLevel - 1] > 1))
+        {
+            gso.playerData.achievements[1] = true;
+            achievementNotices += "\n> First two-star rating!";
+        }
+
+        //First three-star level
+        if ((!gso.playerData.achievements[2]) && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2))
+        {
+            gso.playerData.achievements[2] = true;
+            achievementNotices += "\n> First three-star rating!";
+        }
+
+        //Three three-star levels in a row
         if ((!gso.playerData.achievements[3]) && (gso.missionLevel > 2)
             && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2)
             && (gso.playerData.levelStatus[gso.missionLevel - 2] > 2)
-            && (gso.playerData.levelStatus[gso.missionLevel - 3] > 2)) gso.playerData.achievements[3] = true;
-        if ((!gso.playerData.achievements[4]) && (gso.missionLevel > 4)
-            && (gso.playerData.levelStatus[gso.missionLevel - 1] > 2)
-            && (gso.playerData.levelStatus[gso.missionLevel - 2] > 2)
-            && (gso.playerData.levelStatus[gso.missionLevel - 3] > 2)
-            && (gso.playerData.levelStatus[gso.missionLevel - 4] > 2)
-            && (gso.playerData.levelStatus[gso.missionLevel - 5] > 2)) gso.playerData.achievements[4] = true;
+            && (gso.playerData.levelStatus[gso.missionLevel - 3] > 2))
+        {
+            gso.playerData.achievements[3] = true;
+            achievementNotices += "\n> Three three-star ratings in a row!";
+        }
+
+        //Completed both left and right hand only levels with three stars
+        if ((!gso.playerData.achievements[4]) && (gso.playerData.levelStatus[5] > 2) && (gso.playerData.levelStatus[6] > 2))
+        {
+            gso.playerData.achievements[4] = true;
+            achievementNotices += "\n> Ambidexterous performance!";
+        }
+
+        //Completed pangram level with three-stars
+        if ((!gso.playerData.achievements[5]) && (gso.missionLevel == 8) && (gso.playerData.levelStatus[7] > 2))
+        {
+            gso.playerData.achievements[5] = true;
+            achievementNotices += "\n> Master of all letters!";
+        }
+
+        //Error-free performance
+        if (!gso.playerData.achievements[6] && (numErrors == 0))
+        {
+            gso.playerData.achievements[6] = true;
+            achievementNotices += "\n> An error-free performance!";
+        }
+
+        //Speed demon, 50 WPM average
+        if (!gso.playerData.achievements[7] && (avgSpeed > 50.0f))
+        {
+            gso.playerData.achievements[7] = true;
+            achievementNotices += "\n> You're a speed demon!  Over 50 WPM!";
+        }
+
+        //Completed fifteen missions
+        if (!gso.playerData.achievements[8] && (gso.missionLevel > 9))
+        {
+            gso.playerData.achievements[8] = true;
+            achievementNotices += "\n> Congratulations, Secret Agent" + gso.playerData.playerName + ".\n> You are now Licensed to Type!";
+        }
+
+        //Earned three-star ratings on all missions
+        if (!gso.playerData.achievements[9] && (threeStarMissions > 14))
+        {
+            gso.playerData.achievements[9] = true;
+            achievementNotices += "\n> LEGENDARY!  Three-star ratings on ALL missions!";
+        }
 
         //Display the mission success message in the keyword display field
         keywordIndex = 0;
@@ -344,6 +413,7 @@ public class MissionController : MonoBehaviour
         //Display the mission success message in the terminal display and invite the player to try again
         terminalText += "\n> MISSION SUCCESS!";
         terminalText += "\n> Rating: " + starRating + "\n> ";
+        terminalText += achievementNotices + "\n> ";
         terminalText += "\n> Press [F1] to try again.\n> Press [ESC] to return to the main menu.\n>";
         terminalField.text = terminalText;
 

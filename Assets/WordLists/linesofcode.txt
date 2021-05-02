@@ -1,0 +1,30 @@
+time += dt;
+position += velocity * dt + 0.5f * acceleration * dt * dt;
+newaccel = -9.8f - 0.1f * velocity;
+velocity += 0.5f * (newaccel + acceleration) * dt;
+acceleration = newaccel;
+outFile.WriteLine(time + "," + position + "," + velocity);
+return ((float)Math.Acos(DotProduct(vect1, vect2) / (mag1 * mag2)));
+return vect2 * (DotProduct(vect1, vect2) / magsq);
+s = q1.s * q2.s - Vector3D.DotProduct(q1.v, q2.v),
+v = q2.v * q1.s + q1.v * q2.s + Vector3D.CrossProduct(q1.v, q2.v)
+Quat inQuat = new Quat(0.0f, inVect);
+Vector3D unitRotAxis = Vector3D.Normalize(rotAxis);
+Quat ConjRotQuat = Conjugate(RotQuat);
+Quat outQuat = (ConjRotQuat * inQuat) * RotQuat;
+Matrix3D newRotOp = new Matrix3D();
+newRotOp.element[0, 0] = 1.0f;
+newRotOp.element[1, 1] = (float)Math.Cos(thetaX);
+newRotOp.element[1, 2] = -1.0f * (float)Math.Sin(thetaX);
+newRotOp.element[2, 1] = (float)Math.Sin(thetaX);
+newRotOp.element[2, 2] = (float)Math.Cos(thetaX);
+newRotOp.element[3, 3] = 1.0f;
+force = -1.0f * (BoxPE(position + eps) - BoxPE(position - eps)) / (2.0f * eps);
+velocity += 0.5f * (acceleration + newAccel) * dt;
+altitude = 0.001f * (position.GetMagnitude() - 6380000.0f);
+thisImage.sprite = animationFrames[frameIndex]; 
+timePerFrame = animationPeriod / (float)animationFrames.Length;
+frameIndex += 1; 
+if (frameIndex == animationFrames.Length) frameIndex = 0;
+thisImage.sprite = animationFrames[frameIndex];
+timeRemaining = timePerFrame;

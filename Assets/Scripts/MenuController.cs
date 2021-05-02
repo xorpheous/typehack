@@ -11,8 +11,8 @@ public class MenuController : MonoBehaviour
 {
     public Text messagePanel;
     public InputField playerNameField;
-    public GameStatus gameStatus;
-    public PlayerData playerData;
+    GameStatus gso;
+    //public PlayerData playerData;
     public Text[] missionLabel;
     public Text[] missionClearedStatus;
     public Canvas creditsCanvas;
@@ -23,13 +23,13 @@ public class MenuController : MonoBehaviour
     public AudioSource sfxPlayer;
     public AudioClip keystroke;
 
-    GameObject gso;
+    //GameObject gso;
 
     string messageText = "";
 
     private void Awake()
     {
-        gso = GameObject.Find("GameStatus");
+        gso = GameObject.Find("GameStatus").GetComponent<GameStatus>();
     }
     private void Start()
     {
@@ -38,16 +38,16 @@ public class MenuController : MonoBehaviour
         selectMissionCanvas.enabled = false;
         quitCanvas.enabled = false;
 
-        playerData = gso.GetComponent<GameStatus>().playerData;
+        //playerData = gso.playerData;
         playerNameField.DeactivateInputField();
 
-        if ((playerData.playerName == "") || (playerData.playerName == "Player-1"))
+        if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
         {
             messageText = "> Enter your name by pressing the <color=#00FF00FF>F1</color> key. \n>";
         }
         else
         {
-            messageText = "> Welcome back, Agent " + playerData.playerName + ".\n> ";
+            messageText = "> Welcome back, Agent " + gso.playerData.playerName + ".\n> ";
         }
 
         messagePanel.text = messageText;
@@ -69,14 +69,14 @@ public class MenuController : MonoBehaviour
 
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
-            if ((playerData.playerName == "") || (playerData.playerName == "Player-1"))
+            if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
             {
                 messageText += "\n> <color=#FF0000FF>DATA NOT LOADED!</color>";
                 messageText += "\n> To load your previous progress, press <color=#00FF00FF>F1</color> and provide your name.\n> ";
             }
             else
             {
-                playerData = PlayerData.LoadPlayerData(playerData.playerName);
+                gso.playerData = PlayerData.LoadPlayerData(gso.playerData.playerName);
                 messageText += "\n> <color=#00FF00FF>DATA SUCCESSFULLY LOADED.</color>\n> ";
                 UpdateMissions();
             }
@@ -85,15 +85,15 @@ public class MenuController : MonoBehaviour
 
         if (Keyboard.current.f4Key.wasPressedThisFrame)
         {
-            if ((playerData.playerName == "") || (playerData.playerName == "Player-1"))
+            if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
             {
                 messageText += "\n> <color=#FF0000FF>PROGRESS NOT SAVED!</color>";
                 messageText += "\n> To save your progress, press <color=#00FF00FF>F1</color> and provide your name.\n> ";
             }
             else
             {
-                playerData.SaveToDisk(playerData.playerName);
-                messageText += "\n> Progress saved, Agent " + playerData.playerName + ".  Excellent work.\n>";
+                gso.playerData.SaveToDisk(gso.playerData.playerName);
+                messageText += "\n> Progress saved, Agent " + gso.playerData.playerName + ".  Excellent work.\n>";
             }
             messagePanel.text = messageText;
 
@@ -107,78 +107,78 @@ public class MenuController : MonoBehaviour
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 1;
-                gso.GetComponent<GameStatus>().StartMission(1);
+                gso.missionLevel = 1;
+                gso.StartMission(1);
             }
             if (Keyboard.current.digit2Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 2;
-                gso.GetComponent<GameStatus>().StartMission(2);
+                gso.missionLevel = 2;
+                gso.StartMission(2);
             }
             if (Keyboard.current.digit3Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 3;
-                gso.GetComponent<GameStatus>().StartMission(3);
+                gso.missionLevel = 3;
+                gso.StartMission(3);
             }
             if (Keyboard.current.digit4Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 4;
-                gso.GetComponent<GameStatus>().StartMission(4);
+                gso.missionLevel = 4;
+                gso.StartMission(4);
             }
             if (Keyboard.current.digit5Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 5;
-                gso.GetComponent<GameStatus>().StartMission(5);
+                gso.missionLevel = 5;
+                gso.StartMission(5);
             }
             if (Keyboard.current.digit6Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 6;
-                gso.GetComponent<GameStatus>().StartMission(6);
+                gso.missionLevel = 6;
+                gso.StartMission(6);
             }
             if (Keyboard.current.digit7Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 7;
-                gso.GetComponent<GameStatus>().StartMission(7);
+                gso.missionLevel = 7;
+                gso.StartMission(7);
             }
             if (Keyboard.current.digit8Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 8;
-                gso.GetComponent<GameStatus>().StartMission(8);
+                gso.missionLevel = 8;
+                gso.StartMission(8);
             }
             if (Keyboard.current.digit9Key.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 9;
-                gso.GetComponent<GameStatus>().StartMission(9);
+                gso.missionLevel = 9;
+                gso.StartMission(9);
             }
             if (Keyboard.current.aKey.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 10;
-                gso.GetComponent<GameStatus>().StartMission(10);
+                gso.missionLevel = 10;
+                gso.StartMission(10);
             }
             if (Keyboard.current.bKey.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 11;
-                gso.GetComponent<GameStatus>().StartMission(11);
+                gso.missionLevel = 11;
+                gso.StartMission(11);
             }
             if (Keyboard.current.cKey.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 12;
-                gso.GetComponent<GameStatus>().StartMission(12);
+                gso.missionLevel = 12;
+                gso.StartMission(12);
             }
             if (Keyboard.current.dKey.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 13;
-                gso.GetComponent<GameStatus>().StartMission(13);
+                gso.missionLevel = 13;
+                gso.StartMission(13);
             }
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 14;
-                gso.GetComponent<GameStatus>().StartMission(14);
+                gso.missionLevel = 14;
+                gso.StartMission(14);
             }
             if (Keyboard.current.fKey.wasPressedThisFrame)
             {
-                gso.GetComponent<GameStatus>().missionLevel = 15;
-                gso.GetComponent<GameStatus>().StartMission(15);
+                gso.missionLevel = 15;
+                gso.StartMission(15);
             }
         }
 
@@ -191,9 +191,9 @@ public class MenuController : MonoBehaviour
 
     public void SetPlayerName()
     {
-        playerData.playerName = playerNameField.text;
+        gso.playerData.playerName = playerNameField.text;
         playerNameField.DeactivateInputField();
-        messageText += "\n> Welcome Agent " + playerData.playerName + 
+        messageText += "\n> Welcome Agent " + gso.playerData.playerName + 
             ".\n>\n> Press <color=#00FF00FF>F2</color> to start from the beginning or press <color=#00FF00FF>F3</color> to resume from your previous mission.\n>";
         messagePanel.text = messageText;
     }
@@ -202,8 +202,8 @@ public class MenuController : MonoBehaviour
     {
         for (int i = 0; i < 15; i++)
         {
-            playerData.levelStatus[i] = 0;
-            if (i < 10) playerData.achievements[i] = false;
+            gso.playerData.levelStatus[i] = 0;
+            if (i < 10) gso.playerData.achievements[i] = false;
         }
         UpdateMissions();
     }
@@ -243,11 +243,11 @@ public class MenuController : MonoBehaviour
     {
         for (int i = 0; i < missionClearedStatus.Length; i++)
         {
-            if (playerData.levelStatus[i] == 0)
+            if (gso.playerData.levelStatus[i] == 0)
             {
                 if (i > 0)
                 {
-                    if (playerData.levelStatus[i-1] > 0)
+                    if (gso.playerData.levelStatus[i-1] > 0)
                     {
                         missionLabel[i].color = Color.green;
                     }
@@ -258,13 +258,13 @@ public class MenuController : MonoBehaviour
                 }
                 missionClearedStatus[i].text = "";
             }
-            else if (playerData.levelStatus[i] == 1)
+            else if (gso.playerData.levelStatus[i] == 1)
             {
                 missionLabel[i].color = Color.green;
                 missionClearedStatus[i].color = Color.green;
                 missionClearedStatus[i].text = "*";
             }
-            else if (playerData.levelStatus[i] == 2)
+            else if (gso.playerData.levelStatus[i] == 2)
             {
                 missionLabel[i].color = Color.green;
                 missionClearedStatus[i].color = Color.white;
@@ -277,18 +277,18 @@ public class MenuController : MonoBehaviour
                 missionClearedStatus[i].text = "* * *";
             }
         }
-       for (int i=0; i< playerData.achievements.Length; i++)
+       for (int i=0; i< gso.playerData.achievements.Length; i++)
         {
-            achievementMedals[i].enabled = playerData.achievements[i];
+            achievementMedals[i].enabled = gso.playerData.achievements[i];
         }
     }
     private void OnDestroy()
     {
         //If the saveOnDestroy flag is set, data will automatically be saved.  This can be
         //triggered by scene changes, application ending, or manual deletion of the GameObject
-        if (playerData.saveOnDestroy)
+        if (gso.playerData.saveOnDestroy)
         {
-            playerData.SaveToDisk(playerData.playerName);
+            gso.playerData.SaveToDisk(gso.playerData.playerName);
         }
         //Again, not limited to calling SaveToDisk here.  It can be called any time you want to
         //save data.  Remember that the Project window will have to refresh before you see your

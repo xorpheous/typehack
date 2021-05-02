@@ -181,6 +181,7 @@ MonoBehaviour:
   terminalField: {fileID: 2015177193}
   terminalMissionObj: {fileID: 1027357424}
   briefingMissionObj: {fileID: 988444734}
+  briefingDialogField: {fileID: 93354182}
   timeRemainingBar: {fileID: 2005669823}
   missionBriefing: {fileID: 160715746}
   charIndex: 0
@@ -246,9 +247,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: ed795a9eea82f8a45a5d0b21a6a7b5fb, type: 3}
     m_FontSize: 36
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 24
+    m_MaxSize: 64
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -616,7 +617,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 160715742}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -2805,10 +2806,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: ed795a9eea82f8a45a5d0b21a6a7b5fb, type: 3}
-    m_FontSize: 64
+    m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 6
+    m_MinSize: 1
     m_MaxSize: 64
     m_Alignment: 0
     m_AlignByGeometry: 0
