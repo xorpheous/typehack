@@ -1,18 +1,30 @@
-﻿using System.Collections;
+﻿/******************************************************************************
+ * MenuController.cs handles all of the logic and data management involved 
+ * in the Main Menu of typehack.  This includes processing keyboard inputs
+ * for entering the player's name, loading and saving player data, clearing 
+ * the player data to start a new game, displaying the game credits and player
+ * achievement badges, and intiating a typing mission.
+ * 
+ * J. Douglas Patterson
+ * Johnson County Community College
+ * dpatter@jccc.edu
+ * 
+ * v0.1 05-MAY-2021
+ * 
+ * ***************************************************************************/
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-//This class is not needed to use the SaveData class.  It is simply to show a very basic example
-//of how to use SaveData.
 public class MenuController : MonoBehaviour
 {
-    public Text messagePanel;
+    /**************************************************************************
+     * * * *                    DECLARE VARIABLES                      * * * */
     public InputField playerNameField;
-    GameStatus gso;
-    //public PlayerData playerData;
+    public Text messagePanel;
     public Text[] missionLabel;
     public Text[] missionClearedStatus;
     public Canvas creditsCanvas;
@@ -22,25 +34,36 @@ public class MenuController : MonoBehaviour
     public Image[] achievementMedals;
     public AudioSource sfxPlayer;
     public AudioClip keystroke;
-
-    //GameObject gso;
+    public AudioClip buzz;
 
     string messageText = "";
+    GameStatus gso;
 
+    /**************************************************************************
+    * * * *  DEFINE THE GAME STATUS OBJECT BEFORE WE DO ANYTHING ELSE  * * * */
     private void Awake()
     {
         gso = GameObject.Find("GameStatus").GetComponent<GameStatus>();
     }
+
+    /**************************************************************************
+    * * * *     INITIALIZE VARIABLES AND DEFINE INITIAL GAME STATE     * * * */
     private void Start()
     {
+        //Hide and lock the mouse cursor
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        //Start with all specialty canvases hidden
         achievementsCanvas.enabled = false;
         creditsCanvas.enabled = false;
         selectMissionCanvas.enabled = false;
         quitCanvas.enabled = false;
 
-        //playerData = gso.playerData;
+        //Make sure the input field for the player's name is not active from the start
         playerNameField.DeactivateInputField();
 
+        //Check to see if they player has already registered their name.  If not, ask for their name.
         if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
         {
             messageText = "> Enter your name by pressing the <color=#00FF00FF>F1</color> key. \n>";
@@ -50,6 +73,7 @@ public class MenuController : MonoBehaviour
             messageText = "> Welcome back, Agent " + gso.playerData.playerName + ".\n> ";
         }
 
+        //Update the text in the message panel and the mission status display.
         messagePanel.text = messageText;
         UpdateMissions();
     }
@@ -58,15 +82,20 @@ public class MenuController : MonoBehaviour
      * * * *             LISTEN FOR MENU SELECTION INPUTS              * * * */
     void Update()
     {
+        //Play a "bomp" sound for every keystroke
         if (Keyboard.current.anyKey.wasPressedThisFrame) sfxPlayer.PlayOneShot(keystroke);
 
+        //Activate and select the input field so the player may enter their name
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
             playerNameField.ActivateInputField();
             playerNameField.Select();
         }
+
+        //Clear all player achievements and mission progress
         if (Keyboard.current.f2Key.wasPressedThisFrame) StartNewGame();
 
+        //Load in the save data from disk and update the mission status display if and only if they have provided a name.
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
@@ -83,6 +112,7 @@ public class MenuController : MonoBehaviour
             messagePanel.text = messageText;
         }
 
+        //Save the player data to the disk if and only if they have provided a name.
         if (Keyboard.current.f4Key.wasPressedThisFrame)
         {
             if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
@@ -96,13 +126,15 @@ public class MenuController : MonoBehaviour
                 messageText += "\n> Progress saved, Agent " + gso.playerData.playerName + ".  Excellent work.\n>";
             }
             messagePanel.text = messageText;
-
         }
-        if (Keyboard.current.f5Key.wasPressedThisFrame) MissionSelect();
-        if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleAchievements();
-        if (Keyboard.current.f7Key.wasPressedThisFrame) ToggleCredits();
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) ToggleQuit();
 
+        if (Keyboard.current.f5Key.wasPressedThisFrame) MissionSelect();            //Toggle the visibility of the mission select canvas
+        if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleAchievements();       //Toggle the visibility of the achievements canvas
+        if (Keyboard.current.f7Key.wasPressedThisFrame) ToggleCredits();            //Toggle the visibility of the credits canvas
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) ToggleQuit();           //Toggle the visibility of the confirm quit canvas
+
+        //If the mission canvas is visible, allow the player to use the number keys to select a mission to begin, but
+        //do not allow the player to start a mission if they have not successfully completed the previous mission.
         if (selectMissionCanvas.enabled)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
@@ -112,90 +144,193 @@ public class MenuController : MonoBehaviour
             }
             if (Keyboard.current.digit2Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 2;
-                gso.StartMission(2);
+                if (gso.playerData.levelStatus[0] > 0)
+                {
+                    gso.missionLevel = 2;
+                    gso.StartMission(2);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit3Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 3;
-                gso.StartMission(3);
+                if (gso.playerData.levelStatus[1] > 0)
+                {
+                    gso.missionLevel = 3;
+                    gso.StartMission(3);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit4Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 4;
-                gso.StartMission(4);
+                if (gso.playerData.levelStatus[2] > 0)
+                {
+                    gso.missionLevel = 4;
+                    gso.StartMission(4);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit5Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 5;
-                gso.StartMission(5);
+                if (gso.playerData.levelStatus[3] > 0)
+                {
+                    gso.missionLevel = 5;
+                    gso.StartMission(5);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit6Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 6;
-                gso.StartMission(6);
+                if (gso.playerData.levelStatus[4] > 0)
+                {
+                    gso.missionLevel = 6;
+                    gso.StartMission(6);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit7Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 7;
-                gso.StartMission(7);
+                if (gso.playerData.levelStatus[5] > 0)
+                {
+                    gso.missionLevel = 7;
+                    gso.StartMission(7);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit8Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 8;
-                gso.StartMission(8);
+                if (gso.playerData.levelStatus[6] > 0)
+                {
+                    gso.missionLevel = 8;
+                    gso.StartMission(8);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.digit9Key.wasPressedThisFrame)
             {
-                gso.missionLevel = 9;
-                gso.StartMission(9);
+                if (gso.playerData.levelStatus[7] > 0)
+                {
+                    gso.missionLevel = 9;
+                    gso.StartMission(9);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.aKey.wasPressedThisFrame)
             {
-                gso.missionLevel = 10;
-                gso.StartMission(10);
+                if (gso.playerData.levelStatus[8] > 0)
+                {
+                    gso.missionLevel = 10;
+                    gso.StartMission(10);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.bKey.wasPressedThisFrame)
             {
-                gso.missionLevel = 11;
-                gso.StartMission(11);
+                if (gso.playerData.levelStatus[9] > 0)
+                {
+                    gso.missionLevel = 11;
+                    gso.StartMission(11);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.cKey.wasPressedThisFrame)
             {
-                gso.missionLevel = 12;
-                gso.StartMission(12);
+                if (gso.playerData.levelStatus[10] > 0)
+                {
+                    gso.missionLevel = 12;
+                    gso.StartMission(12);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.dKey.wasPressedThisFrame)
             {
-                gso.missionLevel = 13;
-                gso.StartMission(13);
+                if (gso.playerData.levelStatus[11] > 0)
+                {
+                    gso.missionLevel = 13;
+                    gso.StartMission(13);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                gso.missionLevel = 14;
-                gso.StartMission(14);
+                if (gso.playerData.levelStatus[12] > 0)
+                {
+                    gso.missionLevel = 14;
+                    gso.StartMission(14);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
             if (Keyboard.current.fKey.wasPressedThisFrame)
             {
-                gso.missionLevel = 15;
-                gso.StartMission(15);
+                if (gso.playerData.levelStatus[13] > 0)
+                {
+                    gso.missionLevel = 15;
+                    gso.StartMission(15);
+                }
+                else
+                {
+                    sfxPlayer.PlayOneShot(buzz);
+                }
             }
         }
 
-            if (quitCanvas.enabled)
+        //If the quit canvas is enabled, ask the player to confirm that they wish to quit the game
+        if (quitCanvas.enabled)
         {
             if (Keyboard.current.yKey.wasPressedThisFrame) Application.Quit();
             if (Keyboard.current.nKey.wasPressedThisFrame) ToggleQuit();
         }
     }
 
+    /**************************************************************************
+     * * * *                 MAIN MENU PUBLIC METHODS                  * * * */
     public void SetPlayerName()
     {
         gso.playerData.playerName = playerNameField.text;
         playerNameField.DeactivateInputField();
-        messageText += "\n> Welcome Agent " + gso.playerData.playerName + 
+        messageText += "\n> Welcome Agent " + gso.playerData.playerName +
             ".\n>\n> Press <color=#00FF00FF>F2</color> to start from the beginning or press <color=#00FF00FF>F3</color> to resume from your previous mission.\n>";
         messagePanel.text = messageText;
+        gso.playerData = PlayerData.LoadPlayerData(gso.playerData.playerName);
+        UpdateMissions();
     }
 
     void StartNewGame()
@@ -205,9 +340,13 @@ public class MenuController : MonoBehaviour
             gso.playerData.levelStatus[i] = 0;
             if (i < 10) gso.playerData.achievements[i] = false;
         }
+        gso.playerData.SaveToDisk(gso.playerData.playerName);
         UpdateMissions();
     }
-    public void MissionSelect()
+
+    /**************************************************************************
+    * * * *                  TOGGLE CANVAS VISIBILITY                  * * * */
+    private void MissionSelect()
     {
         selectMissionCanvas.enabled = !selectMissionCanvas.enabled;
         achievementsCanvas.enabled = false;
@@ -215,7 +354,7 @@ public class MenuController : MonoBehaviour
         quitCanvas.enabled = false;
     }
 
-    void ToggleAchievements()
+    private void ToggleAchievements()
     {
         achievementsCanvas.enabled = !achievementsCanvas.enabled;
         creditsCanvas.enabled = false;
@@ -223,7 +362,7 @@ public class MenuController : MonoBehaviour
         selectMissionCanvas.enabled = false;
     }
 
-    void ToggleCredits()
+    private void ToggleCredits()
     {
         creditsCanvas.enabled = !creditsCanvas.enabled;
         achievementsCanvas.enabled = false;
@@ -231,7 +370,7 @@ public class MenuController : MonoBehaviour
         quitCanvas.enabled = false;
     }
 
-    void ToggleQuit()
+    private void ToggleQuit()
     {
         quitCanvas.enabled = !quitCanvas.enabled;
         achievementsCanvas.enabled = false;
@@ -239,7 +378,9 @@ public class MenuController : MonoBehaviour
         selectMissionCanvas.enabled = false;
     }
 
-    void UpdateMissions()
+    /**************************************************************************
+    * * * *   UPDATE THE MISSION STATUS INDICATORS ON THE MAIN MENU    * * * */
+    private void UpdateMissions()
     {
         for (int i = 0; i < missionClearedStatus.Length; i++)
         {
@@ -282,17 +423,14 @@ public class MenuController : MonoBehaviour
             achievementMedals[i].enabled = gso.playerData.achievements[i];
         }
     }
+
+    /**************************************************************************
+    * * * *         SAVE THE PLAYER DATA BEFORE THE GAME QUITS         * * * */
     private void OnDestroy()
     {
-        //If the saveOnDestroy flag is set, data will automatically be saved.  This can be
-        //triggered by scene changes, application ending, or manual deletion of the GameObject
         if (gso.playerData.saveOnDestroy)
         {
             gso.playerData.SaveToDisk(gso.playerData.playerName);
         }
-        //Again, not limited to calling SaveToDisk here.  It can be called any time you want to
-        //save data.  Remember that the Project window will have to refresh before you see your
-        //save file.  This happens automatically when recompiling or importing assets, or you can
-        //right click in the Project window and select refresh.
     }
 }

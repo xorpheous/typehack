@@ -11,11 +11,13 @@ public class DoNotDestroy : MonoBehaviour
     {
         if (instance == null)
         {
+            //If this is the first instance of this object, don't let it be destroyed.
             instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
         {
+            //If this is a clone, destroy it. We don't want duplicate objects.
             Destroy(this.gameObject);
         }
     }

@@ -58,7 +58,7 @@ public class GameStatus : MonoBehaviour
     private void Start()
     {
         //Define Keyword Path and Filename
-        keywordFilePath = Application.dataPath + "/WordLists/";
+        keywordFilePath = Application.streamingAssetsPath + "/WordLists/";
         keywordFilenames[0] = "homerow_words.txt";
         keywordFilenames[1] = "homerow_words_plusE.txt";
         keywordFilenames[2] = "homerow_words_plusI.txt";

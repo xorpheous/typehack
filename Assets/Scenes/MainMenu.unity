@@ -871,14 +871,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12e7af9a0d523049a931eabd3954847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  messagePanel: {fileID: 1757911829}
   playerNameField: {fileID: 1091259993}
-  gameStatus: {fileID: 1649923782}
-  playerData:
-    playerName: Player-1
-    levelStatus: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-    achievements: 00000000000000000000
-    saveOnDestroy: 1
+  messagePanel: {fileID: 1757911829}
   missionLabel:
   - {fileID: 531369987}
   - {fileID: 1433094329}
@@ -928,6 +922,7 @@ MonoBehaviour:
   - {fileID: 48545278}
   sfxPlayer: {fileID: 203347209}
   keystroke: {fileID: 8300000, guid: 0747798c994b17f44a9d5709546299cb, type: 3}
+  buzz: {fileID: 8300000, guid: 8118ac3caaba4b1438e865ad760d61de, type: 3}
 --- !u!1 &92844256
 GameObject:
   m_ObjectHideFlags: 0
@@ -2149,7 +2144,11 @@ MonoBehaviour:
     by Kieran Merkman, https://pixabay.com/illustrations/hud-sci-fi-design-space-display-3778788/,
     CC0\r\n\r\n<color=#FFC000FF>Typography\r</color>\nWhite Rabbit by Matthew Welch,
     https://www.dafont.com/white-rabbit.font, CC0\r\nNeuropol by Typeodemic Fonts,
-    https://www.dafont.com/neuropol.font, CC0\r\n\r\n<color=#FFC000FF>Sound FX\r</color>\n\r\n<color=#FFC000FF>Music\r</color>\n"
+    https://www.dafont.com/neuropol.font, CC0\r\n\r\n<color=#FFC000FF>Sound FX\r</color>\n\rBuzzer,
+    Chime, and Keystroke by J. Douglas Patterson using BFXR\r\n\n<color=#FFC000FF>Music\r</color>\nFuturistic
+    2 by Alexander Nakarada, https://filmmusic.io/song/4731-futuristic-2, CC-BY-4.0\r\nPercussion
+    Loop #12 by Muz Station Production, https://assetstore.unity.com/packages/audio/music/orchestral/action-percussion-loops-133165\r\nUnknown
+    Terrain by Muz Station Production, https://assetstore.unity.com/packages/audio/music/electronic/cosmos-music-pack-132058"
 --- !u!222 &363422763
 CanvasRenderer:
   m_ObjectHideFlags: 0

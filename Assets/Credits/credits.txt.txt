@@ -12,6 +12,9 @@ White Rabbit by Matthew Welch, https://www.dafont.com/white-rabbit.font, CC0
 Neuropol by Typeodemic Fonts, https://www.dafont.com/neuropol.font, CC0
 
 Sound FX
+Buzzer, Chime, and Keystroke by J. Douglas Patterson using BFXR
 
 Music
 Futuristic 2 by Alexander Nakarada, https://filmmusic.io/song/4731-futuristic-2, CC-BY-4.0
+Percussion Loop #12 by Muz Station Production, https://assetstore.unity.com/packages/audio/music/orchestral/action-percussion-loops-133165
+Unknown Terrain by Muz Station Production, https://assetstore.unity.com/packages/audio/music/electronic/cosmos-music-pack-132058

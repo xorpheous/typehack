@@ -22,6 +22,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 [System.Serializable]
 public class PlayerData
@@ -42,34 +43,34 @@ public class PlayerData
     public void SaveToDisk(string playerName)
     {
         //Construct the path
-        string path = System.IO.Path.Combine(Application.streamingAssetsPath, playerName + "_savedata.json");
+        string path = Path.Combine(Application.streamingAssetsPath, playerName + "_savedata.json");
 
         //Use Unity's JsonUtility class to convert this class to a json string
         string data = JsonUtility.ToJson(this);
 
         //Open the file in overwrite mode and save it.
-        System.IO.StreamWriter outFile = new System.IO.StreamWriter(path, false);
+        StreamWriter outFile = new StreamWriter(path, false);
         outFile.Write(data);
         outFile.Close();
     }
 
     /**************************************************************************
      * LoadPlayerData is a method that reads the current values of the member
-     *  variables from the hard drive using the built-in JSON serialization
-     *  utility.  The player name of the data to be loaded must be supplied 
-     *  to this method as a string.   A new instance of the PlayerData class
-     *  is returned by this method.                                          */
+     * variables from the hard drive using the built-in JSON serialization
+     * utility.  The player name of the data to be loaded must be supplied 
+     * to this method as a string.  A new instance of the PlayerData class
+     * is returned by this method.                                          */
     public static PlayerData LoadPlayerData(string playerName)
     {
         PlayerData result = null;
 
         //validate existance of file
-        string path = System.IO.Path.Combine(Application.streamingAssetsPath, playerName + "_savedata.json");
+        string path = Path.Combine(Application.streamingAssetsPath, playerName + "_savedata.json");
 
-        if (System.IO.File.Exists(path))
+        if (File.Exists(path))
         {
             //file exists, so read the file into a string.
-            System.IO.StreamReader inputFile = new System.IO.StreamReader(path);
+            StreamReader inputFile = new StreamReader(path);
             string data = inputFile.ReadToEnd();
 
             inputFile.Close();
