@@ -61,7 +61,7 @@ public class MissionController : MonoBehaviour
     float avgSpeed = 0.0f;                  //Average typing speed for the current mission (wpm, 5 characters = 1 word)
     float errorRate = 0.0f;                 //Percentage of erroneous key presses for the current mission
 
-    int keywordsCompleted;                   //Number of keywords completed
+    int keywordsCompleted;                  //Number of keywords completed
     int wordStreak = 0;                     //Number of consecutively correctly typed words
     int numErrors = 0;                      //Total number of errors for the mission
     int numChars = 0;                       //Total number of characters typed for the mission including erroneous characters
@@ -133,6 +133,9 @@ public class MissionController : MonoBehaviour
         //Always allow ESC to return the player to the main menu.
         if (Keyboard.current.escapeKey.wasPressedThisFrame) SceneManager.LoadScene("MainMenu");
 
+        //Mute button
+        if (Keyboard.current.f12Key.wasPressedThisFrame) ToggleMute();
+
         //Update the mission status only while the mission is active
         if ((missionActive) && (!briefingActive))
         {
@@ -192,6 +195,19 @@ public class MissionController : MonoBehaviour
         missionBriefing.enabled = false;
         missionActive = true;
         //do whatever else needs to happen in the future here (music and whatnot)
+    }
+
+    public void ToggleMute()
+    {
+        AudioSource musicPlayer = GameObject.Find("Music_Player").GetComponent<AudioSource>();
+        if (musicPlayer.volume < 0.5f)
+        {
+            musicPlayer.volume = 1.0f;
+        }
+        else
+        {
+            musicPlayer.volume = 0.0f;
+        }
     }
 
     /**************************************************************************

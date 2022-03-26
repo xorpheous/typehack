@@ -35,28 +35,12 @@ public class GameStatus : MonoBehaviour
     public string[] missionBriefing = new string[15];       //Mission briefing text indexed by mission level
 
     /**************************************************************************
-     * Before we do anything else, load in the saved player data.  If no save
-     * file exist, create a new set of player data.                          */
+     * * * *              INITIALIZE INTERNAL VARABLES                 * * * */
     private void Awake()
     {
-        PlayerData tempData = PlayerData.LoadPlayerData(playerData.playerName);
+        //Intialize the playerData variable.  We'll load in data if it exists later.
+        playerData = new PlayerData();
 
-        //If the load failed, then create a new instance of PlayerData
-        if (tempData == null)
-        {
-            playerData = new PlayerData();
-        }
-        //If the load suceeded, then use the loaded file
-        else
-        {
-            playerData = tempData;
-        }
-    }
-
-    /**************************************************************************
-     * * * *                   INITIALIZE VARIABLES                    * * * */
-    private void Start()
-    {
         //Define Keyword Path and Filename
         keywordFilePath = Application.streamingAssetsPath + "/WordLists/";
         keywordFilenames[0] = "homerow_words.txt";
@@ -133,6 +117,20 @@ public class GameStatus : MonoBehaviour
         missionBriefing[14] = "Are you up for this final challenge?  The threat is now trying to access the programming code directly.  " +
             "Type in the lines of code exactly as they appear.  Pay close attention to the spacing and capitalization.  " +
             "They will be far from standard.";
+    }
+
+    /**************************************************************************
+     * * * *                   INITIALIZE VARIABLES                    * * * */
+    private void Start()
+    {
+        //Load previous saved game data if they exist.
+        PlayerData tempData = PlayerData.LoadPlayerData(playerData.playerName);
+
+        //If the load suceeded, then use the loaded file
+        if (tempData != null)
+        {
+            playerData = tempData;
+        }
     }
 
     /**************************************************************************

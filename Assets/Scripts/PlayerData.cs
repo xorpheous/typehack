@@ -35,6 +35,21 @@ public class PlayerData
     
     public bool saveOnDestroy = true;    //Flag to determine if data should be autosaved when quitting.
 
+    /**************************************************************************
+     * * * *                        CONSTRUCTORS                       * * * */
+     public PlayerData()
+    {
+        playerName = "Player-1";
+        saveOnDestroy = true;
+        for (int i = 0; i < 15; i++)
+        {
+            levelStatus[i] = 0;
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            achievements[i] = false;
+        }
+    }
 
     /**************************************************************************
      * SaveToDisk is a parameterless method that writes the current values

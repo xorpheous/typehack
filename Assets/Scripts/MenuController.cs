@@ -40,15 +40,8 @@ public class MenuController : MonoBehaviour
     GameStatus gso;
 
     /**************************************************************************
-    * * * *  DEFINE THE GAME STATUS OBJECT BEFORE WE DO ANYTHING ELSE  * * * */
+    * * * *                INITIALIZE INTERNAL VARIABLES               * * * */
     private void Awake()
-    {
-        gso = GameObject.Find("GameStatus").GetComponent<GameStatus>();
-    }
-
-    /**************************************************************************
-    * * * *     INITIALIZE VARIABLES AND DEFINE INITIAL GAME STATE     * * * */
-    private void Start()
     {
         //Hide and lock the mouse cursor
         Cursor.visible = false;
@@ -62,6 +55,14 @@ public class MenuController : MonoBehaviour
 
         //Make sure the input field for the player's name is not active from the start
         playerNameField.DeactivateInputField();
+    }
+
+    /**************************************************************************
+    * * * *     INITIALIZE VARIABLES AND DEFINE INITIAL GAME STATE     * * * */
+    private void Start()
+    {
+        gso = GameObject.Find("GameStatus").GetComponent<GameStatus>();
+        if (gso == null) Debug.Log("GameStatus object not found");
 
         //Check to see if they player has already registered their name.  If not, ask for their name.
         if ((gso.playerData.playerName == "") || (gso.playerData.playerName == "Player-1"))
@@ -132,6 +133,20 @@ public class MenuController : MonoBehaviour
         if (Keyboard.current.f6Key.wasPressedThisFrame) ToggleAchievements();       //Toggle the visibility of the achievements canvas
         if (Keyboard.current.f7Key.wasPressedThisFrame) ToggleCredits();            //Toggle the visibility of the credits canvas
         if (Keyboard.current.escapeKey.wasPressedThisFrame) ToggleQuit();           //Toggle the visibility of the confirm quit canvas
+
+        //Mute button
+        if (Keyboard.current.f12Key.wasPressedThisFrame)
+        {
+            AudioSource musicPlayer = GameObject.Find("MusicPlayer").GetComponent<AudioSource>();
+            if (musicPlayer.volume < 0.5f)
+            {
+                musicPlayer.volume = 1.0f;
+            }
+            else
+            {
+                musicPlayer.volume = 0.0f;
+            }
+        }
 
         //If the mission canvas is visible, allow the player to use the number keys to select a mission to begin, but
         //do not allow the player to start a mission if they have not successfully completed the previous mission.
@@ -324,12 +339,14 @@ public class MenuController : MonoBehaviour
      * * * *                 MAIN MENU PUBLIC METHODS                  * * * */
     public void SetPlayerName()
     {
+        if (gso.playerData == null) Debug.Log("The Player Data Object is not defined in SetPlayerName.");
+
         gso.playerData.playerName = playerNameField.text;
         playerNameField.DeactivateInputField();
         messageText += "\n> Welcome Agent " + gso.playerData.playerName +
             ".\n>\n> Press <color=#00FF00FF>F2</color> to start from the beginning or press <color=#00FF00FF>F3</color> to resume from your previous mission.\n>";
         messagePanel.text = messageText;
-        gso.playerData = PlayerData.LoadPlayerData(gso.playerData.playerName);
+        //gso.playerData = PlayerData.LoadPlayerData(gso.playerData.playerName);
         UpdateMissions();
     }
 
@@ -384,6 +401,9 @@ public class MenuController : MonoBehaviour
     {
         for (int i = 0; i < missionClearedStatus.Length; i++)
         {
+            if (gso == null) Debug.Log("The GameStatus Object is not defined.");
+            if (gso == null) Debug.Log("The GameStatus Object is not defined.");
+            if (gso.playerData == null) Debug.Log("The Player Data Object is not defined in UpdateMissions.");
             if (gso.playerData.levelStatus[i] == 0)
             {
                 if (i > 0)
